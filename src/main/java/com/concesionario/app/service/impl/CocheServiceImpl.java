@@ -73,4 +73,27 @@ public class CocheServiceImpl implements CocheService {
         log.debug("Request to delete Coche : {}", id);
         cocheRepository.deleteById(id);
     }
+
+    @Override
+    public Page<CocheDTO> cochesPaginadosPorModelo(String modelo, Pageable pageable) {
+        log.debug("Request to get all Coches");
+        if ("".equals(modelo)) {
+            cocheRepository.findAll();
+        }
+        return cocheRepository.cochesPaginadosPorModelo(modelo, pageable).map(cocheMapper::toDto);
+    }
+
+    @Override
+    public Page<CocheDTO> cochesPaginadosPorColor(String color, Pageable pageable) {
+        log.debug("Request to get all Coches amarillos");
+        if ("".equals(color)) {
+            cocheRepository.findAll();
+        }
+        return cocheRepository.findByColor(color, pageable).map(cocheMapper::toDto);
+    }
+
+    @Override
+    public Page<CocheDTO> findAllByExposicion(Boolean exposicion, Pageable pageable) {
+        return cocheRepository.cochesPaginadosPorExposicion(exposicion, pageable).map(cocheMapper::toDto);
+    }
 }

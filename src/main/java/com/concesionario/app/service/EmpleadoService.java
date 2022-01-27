@@ -34,6 +34,14 @@ public interface EmpleadoService {
     Page<EmpleadoDTO> findAll(Pageable pageable);
 
     /**
+     * Get all the empleados.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<EmpleadoDTO> findByActivo(Pageable pageable, Boolean activo);
+
+    /**
      * Get the "id" empleado.
      *
      * @param id the id of the entity.

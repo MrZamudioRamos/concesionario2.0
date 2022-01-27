@@ -72,6 +72,19 @@ export class EmpleadoComponent implements OnInit {
     });
   }
 
+  findByActivo(findActivo: boolean): void {
+    this.empleadoService.findByActivo(findActivo).subscribe({
+      next: (res: HttpResponse<IEmpleado[]>) => {
+        this.isLoading = false;
+        this.empleados = res.body ?? [];
+      },
+      error: () => {
+        this.isLoading = false;
+        this.onError();
+      },
+    });
+  }
+
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {

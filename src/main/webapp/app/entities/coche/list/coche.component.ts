@@ -23,6 +23,8 @@ export class CocheComponent implements OnInit {
   predicate!: string;
   ascending!: boolean;
   ngbPaginationPage = 1;
+  color?: string;
+  modelo = '';
 
   constructor(
     protected cocheService: CocheService,
@@ -71,7 +73,48 @@ export class CocheComponent implements OnInit {
       }
     });
   }
+  findByColor(): void {
+    if (this.color === '') {
+      this.loadPage();
+    } else {
+      this.cocheService.findByColor(this.color!).subscribe({
+        next: (res: HttpResponse<ICoche[]>) => {
+          this.isLoading = false;
+          this.coches = res.body ?? [];
+        },
+        error: () => {
+          this.isLoading = false;
+          this.onError();
+        },
+      });
+    }
+  }
 
+  findByModel(page?: number, dontNavigate?: boolean): void {
+    if (this.modelo === '') {
+      this.loadPage();
+    } else {
+      this.isLoading = true;
+      const pageToLoad: number = page ?? this.page ?? 1;
+
+      this.cocheService
+        .findAllCochesByModelo(this.modelo, {
+          page: pageToLoad - 1,
+          size: this.itemsPerPage,
+          sort: this.sort(),
+        })
+        .subscribe({
+          next: (res: HttpResponse<ICoche[]>) => {
+            this.isLoading = false;
+            this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
+          },
+          error: () => {
+            this.isLoading = false;
+            this.onError();
+          },
+        });
+    }
+  }
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {

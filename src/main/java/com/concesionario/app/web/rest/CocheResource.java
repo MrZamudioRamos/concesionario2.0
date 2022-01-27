@@ -50,7 +50,9 @@ public class CocheResource {
      * {@code POST  /coches} : Create a new coche.
      *
      * @param cocheDTO the cocheDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new cocheDTO, or with status {@code 400 (Bad Request)} if the coche has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new cocheDTO, or with status {@code 400 (Bad Request)} if
+     *         the coche has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/coches")
@@ -69,11 +71,14 @@ public class CocheResource {
     /**
      * {@code PUT  /coches/:id} : Updates an existing coche.
      *
-     * @param id the id of the cocheDTO to save.
+     * @param id       the id of the cocheDTO to save.
      * @param cocheDTO the cocheDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated cocheDTO,
-     * or with status {@code 400 (Bad Request)} if the cocheDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the cocheDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated cocheDTO,
+     *         or with status {@code 400 (Bad Request)} if the cocheDTO is not
+     *         valid,
+     *         or with status {@code 500 (Internal Server Error)} if the cocheDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/coches/{id}")
@@ -101,14 +106,18 @@ public class CocheResource {
     }
 
     /**
-     * {@code PATCH  /coches/:id} : Partial updates given fields of an existing coche, field will ignore if it is null
+     * {@code PATCH  /coches/:id} : Partial updates given fields of an existing
+     * coche, field will ignore if it is null
      *
-     * @param id the id of the cocheDTO to save.
+     * @param id       the id of the cocheDTO to save.
      * @param cocheDTO the cocheDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated cocheDTO,
-     * or with status {@code 400 (Bad Request)} if the cocheDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the cocheDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the cocheDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated cocheDTO,
+     *         or with status {@code 400 (Bad Request)} if the cocheDTO is not
+     *         valid,
+     *         or with status {@code 404 (Not Found)} if the cocheDTO is not found,
+     *         or with status {@code 500 (Internal Server Error)} if the cocheDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/coches/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -140,7 +149,8 @@ public class CocheResource {
      * {@code GET  /coches} : get all the coches.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of coches in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of coches in body.
      */
     @GetMapping("/coches")
     public ResponseEntity<List<CocheDTO>> getAllCoches(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
@@ -151,10 +161,62 @@ public class CocheResource {
     }
 
     /**
+     * {@code GET /coches/by-modelo/{modelo} : get all the coches paginados por modelo.
+     *
+     * @param modelo the pagination information
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of coches in body.
+     */
+    @GetMapping("/coches/by-modelo/{modelo}")
+    public ResponseEntity<List<CocheDTO>> getAllCochesByModelo(@PathVariable String modelo, Pageable pageable) {
+        log.debug("REST request to get a page of Coches");
+        Page<CocheDTO> page = cocheService.cochesPaginadosPorModelo(modelo, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET /coches/by-color/{color} : get all the coches paginados por color.
+     *
+     * @param color the pagination information
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of coches in body.
+     */
+    @GetMapping("/coches/by-color/{color}")
+    public ResponseEntity<List<CocheDTO>> getAllCochesByColor(@PathVariable String color, Pageable pageable) {
+        log.debug("REST request to get a page of Coches");
+        Page<CocheDTO> page = cocheService.cochesPaginadosPorColor(color, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET /coches/by-exposicion/{exposicion}} : get all the coches by
+     * exposicion.
+     *
+     * @param exposicion true
+     * @param pageable   the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of coches in body.
+     */
+    @GetMapping("/coches/by-exposicion/{exposicion}")
+    public ResponseEntity<List<CocheDTO>> getAllCochesByExposicion(@PathVariable Boolean exposicion, Pageable pageable) {
+        log.debug("REST request to get a page of Coches");
+        Page<CocheDTO> page = cocheService.findAllByExposicion(exposicion, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
      * {@code GET  /coches/:id} : get the "id" coche.
      *
      * @param id the id of the cocheDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the cocheDTO, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the cocheDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/coches/{id}")
     public ResponseEntity<CocheDTO> getCoche(@PathVariable Long id) {

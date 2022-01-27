@@ -34,6 +34,33 @@ public interface CocheService {
     Page<CocheDTO> findAll(Pageable pageable);
 
     /**
+     * Get all the coches by exposicion.
+     *
+     * @param exposicion true
+     * @param pageable   the pagination information.
+     * @return the list of entities.
+     */
+    public Page<CocheDTO> findAllByExposicion(Boolean exposicion, Pageable pageable);
+
+    /**
+     * Get all the coches by modelo paginados.
+     *
+     * @param modelo   the pagination information.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<CocheDTO> cochesPaginadosPorModelo(String modelo, Pageable pageable);
+
+    /**
+     * Get all the coches by color paginados.
+     *
+     * @param color    the color information.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<CocheDTO> cochesPaginadosPorColor(String color, Pageable pageable);
+
+    /**
      * Get the "id" coche.
      *
      * @param id the id of the entity.

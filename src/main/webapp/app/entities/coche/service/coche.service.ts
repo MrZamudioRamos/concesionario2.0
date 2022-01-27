@@ -32,6 +32,20 @@ export class CocheService {
     return this.http.get<ICoche>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  findByColor(color: string): Observable<EntityArrayResponseType> {
+    return this.http.get<ICoche[]>(`${this.resourceUrl}/by-color/${color}`, { observe: 'response' });
+  }
+
+  findAllCochesByModelo(modelo: string, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ICoche[]>(`${this.resourceUrl}/by-modelo/${modelo}`, { params: options, observe: 'response' });
+  }
+
+  findAllCochesByExposicion(exposicion: boolean, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ICoche[]>(`${this.resourceUrl}/by-exposicion/${String(exposicion)}`, { params: options, observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<ICoche[]>(this.resourceUrl, { params: options, observe: 'response' });

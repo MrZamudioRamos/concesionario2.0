@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -143,7 +144,7 @@ public class EmpleadoResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of empleados in body.
      */
     @GetMapping("/empleados")
-    public ResponseEntity<List<EmpleadoDTO>> getAllEmpleados(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<EmpleadoDTO>> getAllEmpleados(@ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Empleados");
         Page<EmpleadoDTO> page = empleadoService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -161,6 +162,20 @@ public class EmpleadoResource {
         log.debug("REST request to get Empleado : {}", id);
         Optional<EmpleadoDTO> empleadoDTO = empleadoService.findOne(id);
         return ResponseUtil.wrapOrNotFound(empleadoDTO);
+    }
+
+    /**
+     * {@code GET  /empleados/{activo} : get the all the empleados actives/no actives
+     *
+     * @param activo the active of the empleados.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the empleadoDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/empleados/by-activo/{activo}")
+    public ResponseEntity<List<EmpleadoDTO>> getAllEmpleadofindByActivo(@ParameterObject Pageable pageable, @PathVariable Boolean activo) {
+        log.debug("REST request to get a page of Empleados actives/no return empleadoRepository.findAll(pageable);");
+        Page<EmpleadoDTO> page = empleadoService.findByActivo(pageable, activo);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

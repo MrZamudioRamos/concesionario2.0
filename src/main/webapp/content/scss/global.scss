@@ -170,4 +170,19 @@ ui bootstrap tweaks
   white-space: nowrap;
 }
 
+.btn-primary.active-btn {
+  background-color: rgb(31, 219, 31);
+  border-color: rgb(116, 233, 38);
+}
+
+.btn-primary.no-active-btn {
+  background-color: rgb(241, 18, 18);
+  border-color: rgb(223, 100, 84);
+}
+
+.btn-primary.equals-btn {
+  background-color: rgb(136, 117, 204);
+  border-color: rgb(223, 100, 84);
+}
+
 /* jhipster-needle-scss-add-main JHipster will add new css style */

@@ -73,4 +73,11 @@ public class EmpleadoServiceImpl implements EmpleadoService {
         log.debug("Request to delete Empleado : {}", id);
         empleadoRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EmpleadoDTO> findByActivo(Pageable pageable, Boolean activo) {
+        log.debug("Request to get all Empleados");
+        return empleadoRepository.findByActivo(pageable, activo).map(empleadoMapper::toDto);
+    }
 }

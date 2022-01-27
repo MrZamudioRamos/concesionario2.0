@@ -13,7 +13,7 @@ import { IEmpleado } from 'app/entities/empleado/empleado.model';
 import { EmpleadoService } from 'app/entities/empleado/service/empleado.service';
 import { ICliente } from 'app/entities/cliente/cliente.model';
 import { ClienteService } from 'app/entities/cliente/service/cliente.service';
-
+import dayjs from 'dayjs/esm';
 @Component({
   selector: 'jhi-venta-update',
   templateUrl: './venta-update.component.html',
@@ -59,6 +59,7 @@ export class VentaUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const venta = this.createFromForm();
+    venta.fecha = dayjs();
     if (venta.id !== undefined) {
       this.subscribeToSaveResponse(this.ventaService.update(venta));
     } else {
@@ -115,7 +116,7 @@ export class VentaUpdateComponent implements OnInit {
 
   protected loadRelationshipsOptions(): void {
     this.cocheService
-      .query({ filter: 'venta-is-null' })
+      .findAllCochesByExposicion(true)
       .pipe(map((res: HttpResponse<ICoche[]>) => res.body ?? []))
       .pipe(map((coches: ICoche[]) => this.cocheService.addCocheToCollectionIfMissing(coches, this.editForm.get('coches')!.value)))
       .subscribe((coches: ICoche[]) => (this.cochesCollection = coches));
